@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
+import path from "path";
 
 import bookRoute from "./route/book.route.js";
 import userRoute from "./route/user.route.js";
@@ -32,3 +33,13 @@ app.use("/user", userRoute);
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
+
+// deployment
+
+if (process.env.NODE_ENV === "production") {
+  const dirPath = path.resolve();
+  app.use(express.static("./Frontend/dist"));
+  app.get("*", (req) => {
+    res.sendFile(path.resolve(dirPath, "./Frontend/dist", "index.html"));
+  });
+}
